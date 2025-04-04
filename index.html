@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>元和帳本</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f8f8f8; }
+    h1 { color: #333; }
+    table { width: 100%%; border-collapse: collapse; margin-bottom: 30px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    th { background-color: #e0e0e0; }
+    input, select, button { padding: 6px; margin: 5px; }
+    .form-group { margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+  <h1>元和帳本：成員列表</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>姓名</th>
+        <th>應繳金額</th>
+        <th>獎勵</th>
+        <th>懲罰</th>
+      </tr>
+    </thead>
+    <tbody id="memberTableBody"></tbody>
+  </table>
+
+  <h2>新增獎懲紀錄</h2>
+  <div class="form-group">
+    <label>成員姓名：</label>
+    <select id="name">
+      <option>張三</option>
+      <option>李四</option>
+      <option>王五</option>
+      <option>趙六</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>類型：</label>
+    <select id="type">
+      <option value="reward">獎勵</option>
+      <option value="penalty">懲罰</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>金額：</label>
+    <input type="number" id="amount" />
+  </div>
+  <div class="form-group">
+    <label>說明：</label>
+    <input type="text" id="desc" size="40"/>
+  </div>
+  <button onclick="addRecord()">新增紀錄</button>
+
+  <script>
+    let members = {
+      "張三": { base: 8000, reward: 0, penalty: 0 },
+      "李四": { base: 8000, reward: 0, penalty: 0 },
+      "王五": { base: 8000, reward: 0, penalty: 0 },
+      "趙六": { base: 8000, reward: 0, penalty: 0 },
+    };
+
+    function renderTable() {
+      const tbody = document.getElementById("memberTableBody");
+      tbody.innerHTML = "";
+      for (let name in members) {
+        const m = members[name];
+        const due = m.base - m.reward + m.penalty;
+        tbody.innerHTML += `<tr>
+          <td>${name}</td>
+          <td>$${due}</td>
+          <td>$${m.reward}</td>
+          <td>$${m.penalty}</td>
+        </tr>`;
+      }
+    }
+
+    function addRecord() {
+      const name = document.getElementById("name").value;
+      const type = document.getElementById("type").value;
+      const amount = parseInt(document.getElementById("amount").value) || 0;
+      const desc = document.getElementById("desc").value;
+
+      if (type === "reward") {
+        members[name].reward += amount;
+      } else {
+        members[name].penalty += amount;
+      }
+
+      alert(`${name} 已新增 ${type === "reward" ? "獎勵" : "懲罰"}：$${amount}（${desc}）`);
+      renderTable();
+    }
+
+    renderTable();
+  </script>
+</body>
+</html>
